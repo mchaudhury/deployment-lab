@@ -1,15 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Automatic deployment</title>
-    <link rel="stylesheet" href="./index.css" />
+    <meta charset="utf-8" />
+    <title>Chapter 12 - HTML5 Canvas with animation</title>
+
+    <style type="text/css">
+      main {
+        width: 50%;
+        margin: 0 auto;
+      }
+
+      #buttons {
+        margin: 0 auto;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      #displayColor {
+        font-size: 24px;
+        text-align: center;
+      }
+
+      canvas {
+        border: 1px dashed black;
+        padding: 10px;
+        margin: 0 auto;
+        display: block;
+      }
+    </style>
   </head>
   <body>
-    <header>Introduction</header>
-    <h1>Automatic deployment! Welcome to my website</h1>
-    <p>Helllo, I am Mo and I am an aspiring Software Developer</p>
+    <main>
+      <div id="buttons">
+        <button id="discoStart">Start the Show!</button>
+        <button id="discoStop">Stop the Show!</button>
+      </div>
+
+      <canvas id="whiteBoard" width="400" height="400"></canvas>
+
+      <p id="displayColor"></p>
+    </main>
+
+    <script type="text/javascript">
+      var notRunning = true; // prevents double-run bug.
+
+      function getRandomColor() {
+        var letters = "0123456789ABCDEF".split("");
+        var color = "#";
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+
+      function discoSquare() {
+        var canvas = document.getElementById("whiteBoard");
+        var context = canvas.getContext("2d");
+
+        var verPos = Math.floor(Math.random() * 399 + 1);
+        // because height is set to 400
+        var theColor = getRandomColor();
+
+        context.lineWidth = 15;
+        context.strokeStyle = theColor; // .strokeStyle returns the color based on the hex value (ex:'#892F92'(purple)) theColor/getRandomColor() generates. This is like when CSS color property [color = '#892F92'] is set to a hex value. Hex value (#892F92) is written like a string- letters and numbers. This is geberated by '0123456789ABCDEF'.split('')- splitting the 0123456789ABCDEF string and added to '#'.
+
+        context.moveTo(10, verPos); // (horizontal / vertical)
+        console.log("vertical pos: " + verPos);
+
+        context.lineTo(400, verPos);
+        context.lineCap = "butt";
+        context.stroke();
+
+        document.getElementById("displayColor").innerHTML = theColor;
+      }
+
+      var animation; //needs to be set as a global variable, otherwise code below would give problems.
+
+      document.getElementById("discoStart").onclick = function () {
+        if (notRunning) {
+          animation = setInterval(discoSquare, 500);
+          //number after is for setting the speed of drawing of lines/animation.
+          // a functio can be an argument(discoSquare, but without the parenthesis() ) for another function: function inside a function.
+          notRunning = false;
+        } else {
+          alert("Sorry, already running.");
+        }
+      };
+
+      document.getElementById("discoStop").onclick = function () {
+        clearInterval(animation); // animation was set as a global variable. But the value of setInterval(discoSquare, 500) was set witihin the anonymous function before. So even though the value was set in a an anonnymous fuction, the value would transfer in the next anonynpus function.
+        notRunning = true;
+      };
+
+      /*var globalVar = "Global";
+    function newVariable (){
+      var globalVar = "Local Now";
+      return globalVar;
+    }
+    alert (globalVar);
+    alert(newVariable());
+    alert (globalVar);
+    */
+    </script>
   </body>
 </html>
